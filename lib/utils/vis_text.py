@@ -260,49 +260,48 @@ def vis_one_image(im_name, boxes, segms=None, dataset=None, keypoints=None):
 
     objects = []
 
-    # Display in largest to smallest order to reduce occlusion
-    areas = (boxes[:, 2] - boxes[:, 0]) * (boxes[:, 3] - boxes[:, 1])
-    sorted_inds = np.argsort(-areas)
+    if boxes is not None and boxes.shape[0] != 0:
+        areas = (boxes[:, 2] - boxes[:, 0]) * (boxes[:, 3] - boxes[:, 1])
+        sorted_inds = np.argsort(-areas)
+        
+        for i in sorted_inds:
+            bbox = boxes[i, :4]
+            score = boxes[i, -1]
 
-    mask_color_id = 0
-    for i in sorted_inds:
-        bbox = boxes[i, :4]
-        score = boxes[i, -1]
+            obj = {
+                "left" : int(round(bbox[0])),
+                "top" : int(round(bbox[1])),
+                "right" : int(round(bbox[2])),
+                "bottom" : int(round(bbox[3])),
+                "class" : dataset.classes[classes[i]],
+                "score" : float(score)
+            }
 
-        obj = {
-            "left" : int(round(bbox[0])),
-            "top" : int(round(bbox[1])),
-            "right" : int(round(bbox[2])),
-            "bottom" : int(round(bbox[3])),
-            "class" : dataset.classes[classes[i]],
-            "score" : float(score)
-        }
+            objects.append(obj)
 
-        objects.append(obj)
+            # # show mask
+            # if segms is not None and len(segms) > i:
+            #     img = np.ones(im.shape)
+            #     color_mask = color_list[mask_color_id % len(color_list), 0:3]
+            #     mask_color_id += 1
 
-        # # show mask
-        # if segms is not None and len(segms) > i:
-        #     img = np.ones(im.shape)
-        #     color_mask = color_list[mask_color_id % len(color_list), 0:3]
-        #     mask_color_id += 1
+            #     w_ratio = .4
+            #     for c in range(3):
+            #         color_mask[c] = color_mask[c] * (1 - w_ratio) + w_ratio
+            #     for c in range(3):
+            #         img[:, :, c] = color_mask[c]
+            #     e = masks[:, :, i]
 
-        #     w_ratio = .4
-        #     for c in range(3):
-        #         color_mask[c] = color_mask[c] * (1 - w_ratio) + w_ratio
-        #     for c in range(3):
-        #         img[:, :, c] = color_mask[c]
-        #     e = masks[:, :, i]
+            #     _, contour, hier = cv2.findContours(
+            #         e.copy(), cv2.RETR_CCOMP, cv2.CHAIN_APPROX_NONE)
 
-        #     _, contour, hier = cv2.findContours(
-        #         e.copy(), cv2.RETR_CCOMP, cv2.CHAIN_APPROX_NONE)
-
-        #     for c in contour:
-        #         polygon = Polygon(
-        #             c.reshape((-1, 2)),
-        #             fill=True, facecolor=color_mask,
-        #             edgecolor='w', linewidth=1.2,
-        #             alpha=0.5)
-        #         ax.add_patch(polygon)
+            #     for c in contour:
+            #         polygon = Polygon(
+            #             c.reshape((-1, 2)),
+            #             fill=True, facecolor=color_mask,
+            #             edgecolor='w', linewidth=1.2,
+            #             alpha=0.5)
+            #         ax.add_patch(polygon)
 
     result = {
         "name" : im_name,

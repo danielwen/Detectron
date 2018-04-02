@@ -112,36 +112,34 @@ def main(args):
     else:
         im_list = [args.im_or_folder]
 
-    lines = []
-
-    for i, im_name in enumerate(im_list):
-        logger.info('Processing ' + im_name)
-        im = cv2.imread(im_name)
-        timers = defaultdict(Timer)
-        t = time.time()
-        with c2_utils.NamedCudaScope(0):
-            cls_boxes, cls_segms, cls_keyps = infer_engine.im_detect_all(
-                model, im, None, timers=timers
-            )
-        logger.info('Inference time: {:.3f}s'.format(time.time() - t))
-        for k, v in timers.items():
-            logger.info(' | {}: {:.3f}s'.format(k, v.average_time))
-        if i == 0:
-            logger.info(
-                ' \ Note: inference on the first image will be slower than the '
-                'rest (caches and auto-tuning need to warm up)'
-            )
-
-        result = vis_utils.vis_one_image(
-            im_name,
-            cls_boxes,
-            cls_segms,
-            dataset=dummy_coco_dataset
-        )
-        lines.append(json.dumps(result))
-
     with open(args.output_file, "w") as f:
-        f.write("\n".join(lines))
+        for i, im_name in enumerate(im_list):
+            logger.info('Processing ' + im_name)
+            im = cv2.imread(im_name)
+            if im is None:
+                continue
+            timers = defaultdict(Timer)
+            t = time.time()
+            with c2_utils.NamedCudaScope(0):
+                cls_boxes, cls_segms, cls_keyps = infer_engine.im_detect_all(
+                    model, im, None, timers=timers
+                )
+            logger.info('Inference time: {:.3f}s'.format(time.time() - t))
+            for k, v in timers.items():
+                logger.info(' | {}: {:.3f}s'.format(k, v.average_time))
+            if i == 0:
+                logger.info(
+                    ' \ Note: inference on the first image will be slower than the '
+                    'rest (caches and auto-tuning need to warm up)'
+                )
+
+            result = vis_utils.vis_one_image(
+                im_name,
+                cls_boxes,
+                cls_segms,
+                dataset=dummy_coco_dataset
+            )
+            f.write(json.dumps(result) + "\n")
 
 
 if __name__ == '__main__':
