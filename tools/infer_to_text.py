@@ -32,7 +32,6 @@ import logging
 import os
 import sys
 import time
-import fnmatch
 import json
 
 from caffe2.python import workspace
@@ -84,19 +83,19 @@ def parse_args():
         type=str
     )
     parser.add_argument(
-        'im_or_folder', help='image or folder of images', default=None
+        '--image_dir', help='Folder of image data', default='lib/datasets/data/imerit/images'
+    )
+    parser.add_argument(
+        '--ann_json', help='JSON annotation file', default=None
     )
     if len(sys.argv) == 1:
         parser.print_help()
         sys.exit(1)
     return parser.parse_args()
 
-
-def riglob(target, pattern):
-    for root, dirnames, filenames in os.walk(target):
-        for filename in fnmatch.filter(filenames, pattern):
-            yield os.path.join(root, filename)
-
+def gen_images(folder, images):
+    for image in images:
+        yield os.path.join(folder, image["file_name"])
 
 def main(args):
     logger = logging.getLogger(__name__)
@@ -107,10 +106,8 @@ def main(args):
     model = infer_engine.initialize_model_from_cfg()
     dummy_coco_dataset = dummy_datasets.get_coco_dataset()
 
-    if os.path.isdir(args.im_or_folder):
-        im_list = riglob(args.im_or_folder, "*." + args.image_ext)
-    else:
-        im_list = [args.im_or_folder]
+    with open(args.ann_json) as f:
+        im_list = gen_images(args.image_dir, json.loads(f.read())["images"])
 
     with open(args.output_file, "w") as f:
         for i, im_name in enumerate(im_list):
