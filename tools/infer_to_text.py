@@ -86,7 +86,7 @@ def parse_args():
         '--image_dir', help='Folder of image data', default='lib/datasets/data/imerit/images'
     )
     parser.add_argument(
-        '--ann_json', help='JSON annotation file', default=None
+        '--ann_json', help='JSON annotation file', default='lib/datasets/data/imerit/imerit-val.json'
     )
     if len(sys.argv) == 1:
         parser.print_help()

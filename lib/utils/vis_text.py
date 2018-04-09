@@ -304,7 +304,7 @@ def vis_one_image(im_name, boxes, segms=None, dataset=None, keypoints=None):
             #         ax.add_patch(polygon)
 
     result = {
-        "name" : im_name,
+        "name" : "/".join(im_name.split("/")[-3:]),
         "objects" : objects
     }
     return result
