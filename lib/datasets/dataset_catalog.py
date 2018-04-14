@@ -186,22 +186,40 @@ DATASETS = {
         DEVKIT_DIR:
             _DATA_DIR + '/VOC2012/VOCdevkit2012'
     },
-    'imerit_train': {
+    'imerit_train_retrain': {
         IM_DIR:
             _DATA_DIR + '/imerit/images',
         ANN_FN:
-            _DATA_DIR + '/imerit/imerit-train.json'
+            _DATA_DIR + '/imerit/imerit-train-retrain.json'
     },
-    'imerit_val': {
+    'imerit_val_retrain': {
         IM_DIR:
             _DATA_DIR + '/imerit/images',
         ANN_FN:
-            _DATA_DIR + '/imerit/imerit-val.json'
+            _DATA_DIR + '/imerit/imerit-val-retrain.json'
     },
-    'imerit_test': {
+    'imerit_test_retrain': {
         IM_DIR:
             _DATA_DIR + '/imerit/images',
         ANN_FN:
-            _DATA_DIR + '/imerit/imerit-test.json'
+            _DATA_DIR + '/imerit/imerit-test-retrain.json'
+    },
+    'imerit_train_transfer': {
+        IM_DIR:
+            _DATA_DIR + '/imerit/images',
+        ANN_FN:
+            _DATA_DIR + '/imerit/imerit-train-transfer.json'
+    },
+    'imerit_val_transfer': {
+        IM_DIR:
+            _DATA_DIR + '/imerit/images',
+        ANN_FN:
+            _DATA_DIR + '/imerit/imerit-val-transfer.json'
+    },
+    'imerit_test_transfer': {
+        IM_DIR:
+            _DATA_DIR + '/imerit/images',
+        ANN_FN:
+            _DATA_DIR + '/imerit/imerit-test-transfer.json'
     }
 }
