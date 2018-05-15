@@ -1,0 +1,7 @@
+python tools/train_net.py --skip-test --cfg configs/imerit-transfer.yaml OUTPUT_DIR /home/daniel/out
+
+python tools/infer_to_text.py --cfg configs/imerit-transfer.yaml --output-file infer-test-transfer-faster-101-fpn.json --wts transfer-faster-101-fpn.pkl
+
+python tools/infer_to_text.py --cfg configs/imerit-retrain.yaml --output-file infer-test-retrain-faster-101-fpn.json --wts retrain-faster-101-fpn.pkl
+
+python tools/infer_to_text.py --cfg configs/12_2017_baselines/e2e_mask_rcnn_R-101-FPN_2x.yaml --output-file infer-test-mask-101-fpn.json --wts mask-101-fpn.pkl
